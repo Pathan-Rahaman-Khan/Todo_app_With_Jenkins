@@ -1,0 +1,10 @@
+const express=require("express");
+const bodyParser=require("body-parser");
+const app=express();
+app.set("view engine","ejs");
+app.use(bodyParser.urlencoded({extended:true}));
+let todos=[];
+app.get("/",(req,res)=>res.render("index",{todos}));
+app.post("/add",(req,res)=>{if(req.body.task)todos.push(req.body.task);res.redirect("/");});
+app.post("/delete/:id",(req,res)=>{todos.splice(req.params.id,1);res.redirect("/");});
+app.listen(3000,()=>console.log("Server running on port 3000"));

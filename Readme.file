@@ -1,0 +1,570 @@
+# 🚀 Todo App With Jenkins, Docker, AWS & CI/CD
+
+A modern Todo Application built using **Node.js**, **Express.js**, and **EJS**, deployed on **AWS EC2** using **Docker** and automated through **Jenkins CI/CD Pipeline** with **GitHub Webhooks**.
+
+---
+
+# 📌 Project Overview
+
+This project demonstrates a complete DevOps workflow from development to deployment.
+
+```text
+Developer
+    ↓
+Git Push
+    ↓
+GitHub Repository
+    ↓
+GitHub Webhook
+    ↓
+Jenkins Freestyle Job
+    ↓
+Docker Build
+    ↓
+Docker Container Deployment
+    ↓
+AWS EC2 Instance
+    ↓
+Application Available to Users
+```
+
+---
+
+# 📸 Application Screenshot
+
+<p align="center">
+  <img src="images/todo-app.png" alt="Todo Application" width="900">
+</p>
+
+> Replace `images/todo-app.png` with the actual image path in your repository.
+
+---
+
+# ✨ Features
+
+* Modern Responsive UI
+* Add Tasks
+* Delete Tasks
+* Dockerized Application
+* Jenkins Freestyle CI/CD Pipeline
+* GitHub Webhook Integration
+* AWS EC2 Deployment
+* Automated Deployments
+* Infrastructure Automation Ready
+* DevOps Best Practices
+
+---
+
+# 🛠️ Tech Stack
+
+| Category         | Technology          |
+| ---------------- | ------------------- |
+| Frontend         | HTML, CSS, EJS      |
+| Backend          | Node.js, Express.js |
+| Containerization | Docker              |
+| CI/CD            | Jenkins             |
+| SCM              | Git & GitHub        |
+| Cloud            | AWS EC2             |
+| OS               | Ubuntu Linux        |
+
+---
+
+# 📂 Project Structure
+
+```text
+Todo_app_With_Jenkins/
+│
+├── images/
+│   └── todo-app.png
+│
+├── views/
+│   └── index.ejs
+│
+├── public/
+│
+├── app.js
+├── package.json
+├── package-lock.json
+├── Dockerfile
+├── README.md
+└── .gitignore
+```
+
+---
+
+# ⚙️ Prerequisites
+
+Install the following:
+
+* Git
+* Node.js
+* npm
+* Docker
+* Jenkins
+* AWS EC2 Ubuntu Server
+
+---
+
+# 📥 Clone Repository
+
+```bash
+git clone https://github.com/Pathan-Rahaman-Khan/Todo_app_With_Jenkins.git
+
+cd Todo_app_With_Jenkins
+```
+
+---
+
+# ▶️ Run Application Locally
+
+## Install Dependencies
+
+```bash
+npm install
+```
+
+## Start Application
+
+```bash
+npm start
+```
+
+## Open Browser
+
+```text
+http://localhost:3000
+```
+
+---
+
+# 🐳 Docker Setup
+
+## Build Docker Image
+
+```bash
+docker build -t todo-app .
+```
+
+## Verify Image
+
+```bash
+docker images
+```
+
+## Run Docker Container
+
+```bash
+docker run -d \
+--name todo-container \
+-p 3000:3000 \
+todo-app
+```
+
+## Verify Running Container
+
+```bash
+docker ps
+```
+
+## View Logs
+
+```bash
+docker logs -f todo-container
+```
+
+## Stop Container
+
+```bash
+docker stop todo-container
+```
+
+## Remove Container
+
+```bash
+docker rm todo-container
+```
+
+---
+
+# ☁️ AWS EC2 Setup
+
+## Launch EC2 Instance
+
+Recommended:
+
+```text
+Ubuntu Server 24.04 LTS
+```
+
+## Open Security Group Ports
+
+| Port | Purpose          |
+| ---- | ---------------- |
+| 22   | SSH              |
+| 8080 | Jenkins          |
+| 3000 | Todo Application |
+
+---
+
+# ☕ Install Java
+
+```bash
+sudo apt update
+
+sudo apt install -y fontconfig openjdk-21-jre
+
+java --version
+```
+
+---
+
+# 🔧 Install Jenkins
+
+## Add Jenkins Repository Key
+
+```bash
+sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
+https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
+```
+
+## Add Repository
+
+```bash
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+```
+
+## Install Jenkins
+
+```bash
+sudo apt update
+
+sudo apt install -y jenkins
+```
+
+## Start Jenkins
+
+```bash
+sudo systemctl enable jenkins
+
+sudo systemctl start jenkins
+```
+
+## Verify Status
+
+```bash
+sudo systemctl status jenkins
+```
+
+## Get Initial Password
+
+```bash
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+```
+
+---
+
+# 🔑 GitHub SSH Configuration
+
+## Generate SSH Key
+
+```bash
+ssh-keygen
+```
+
+## View Public Key
+
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+
+Add this key in:
+
+```text
+GitHub
+→ Settings
+→ SSH and GPG Keys
+→ New SSH Key
+```
+
+---
+
+# 🐳 Install Docker
+
+```bash
+sudo apt update
+
+sudo apt install -y docker.io
+```
+
+## Start Docker
+
+```bash
+sudo systemctl start docker
+
+sudo systemctl enable docker
+```
+
+## Add Jenkins User to Docker Group
+
+```bash
+sudo usermod -aG docker jenkins
+
+sudo systemctl restart jenkins
+```
+
+## Verify Docker
+
+```bash
+docker --version
+
+docker ps
+```
+
+---
+
+# ⚙️ Jenkins Configuration
+
+## Source Code Management
+
+Select:
+
+```text
+Git
+```
+
+Repository URL:
+
+```text
+git@github.com:Pathan-Rahaman-Khan/Todo_app_With_Jenkins.git
+```
+
+Branch:
+
+```text
+*/main
+```
+
+---
+
+# 🔔 Build Triggers
+
+Enable:
+
+```text
+GitHub hook trigger for GITScm polling
+```
+
+---
+
+# 🚀 Execute Shell
+
+Paste below in Jenkins Build Step:
+
+```bash
+#!/bin/bash
+
+echo "Building Docker Image..."
+
+docker build -t todo-app .
+
+echo "Stopping Existing Container..."
+
+docker stop todo-container || true
+
+docker rm todo-container || true
+
+echo "Starting New Container..."
+
+docker run -d \
+--name todo-container \
+-p 3000:3000 \
+todo-app
+
+docker ps
+
+echo "Deployment Successful"
+```
+
+---
+
+# 🔗 GitHub Webhook Configuration
+
+Open:
+
+```text
+GitHub Repository
+→ Settings
+→ Webhooks
+→ Add Webhook
+```
+
+Configuration:
+
+```text
+Payload URL:
+http://<EC2-PUBLIC-IP>:8080/github-webhook/
+
+Content Type:
+application/json
+
+Events:
+Just the push event
+
+Active:
+✓ Checked
+```
+
+Example:
+
+```text
+http://3.109.154.36:8080/github-webhook/
+```
+
+---
+
+# 🔄 CI/CD Workflow
+
+```text
+Developer
+    ↓
+Git Add
+    ↓
+Git Commit
+    ↓
+Git Push
+    ↓
+GitHub Webhook
+    ↓
+Jenkins Build Triggered
+    ↓
+Docker Build
+    ↓
+Container Deployment
+    ↓
+Application Updated Automatically
+```
+
+---
+
+# 📋 Useful Commands
+
+## Git
+
+```bash
+git status
+
+git add .
+
+git commit -m "Updated UI"
+
+git push origin main
+
+git pull origin main
+```
+
+## Docker
+
+```bash
+docker images
+
+docker ps
+
+docker ps -a
+
+docker logs todo-container
+
+docker stop todo-container
+
+docker rm todo-container
+```
+
+## Jenkins
+
+```bash
+sudo systemctl status jenkins
+
+sudo systemctl restart jenkins
+
+sudo journalctl -u jenkins -f
+```
+
+## Linux
+
+```bash
+df -h
+
+free -m
+
+top
+
+htop
+
+netstat -tulnp
+```
+
+---
+
+# 🌐 Application URLs
+
+## Jenkins Dashboard
+
+```text
+http://3.109.154.36:8080
+```
+
+## Todo Application
+
+```text
+http://3.109.154.36:3000
+```
+
+---
+
+# 🎯 Learning Outcomes
+
+This project helps understand:
+
+* Linux Administration
+* Git & GitHub
+* Docker Containers
+* Jenkins Automation
+* CI/CD Pipelines
+* GitHub Webhooks
+* AWS EC2
+* DevOps Deployment Workflow
+* Infrastructure Automation
+* Production Deployment Concepts
+
+---
+
+# 👨‍💻 Author
+
+**Pathan Rahaman Khan**
+
+### DevOps Engineer
+
+#### Skills
+
+* AWS
+* Docker
+* Jenkins
+* Kubernetes
+* Terraform
+* Linux
+* Shell Scripting
+* Git & GitHub
+* CI/CD Pipelines
+
+GitHub Repository:
+
+https://github.com/Pathan-Rahaman-Khan/Todo_app_With_Jenkins
+
+---
+
+# ⭐ Support
+
+If you found this project useful, please consider giving it a **Star ⭐** on GitHub.
+
+Happy Learning & Happy Deploying 🚀
+
+

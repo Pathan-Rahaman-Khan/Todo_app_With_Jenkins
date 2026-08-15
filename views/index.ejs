@@ -1,14 +1,51 @@
-<!DOCTYPE html><html><body>
-<h1>Node.js Todo App123456</h1>
-<form action="/add" method="POST">
-<input type="text" name="task" required>
-<button type="submit">Add</button>
-</form>
-<ul>
-<% todos.forEach((todo,index)=>{ %>
-<li><%= todo %>
-<form action="/delete/<%= index %>" method="POST" style="display:inline">
-<button type="submit">Delete</button>
-</form></li>
-<% }) %>
-</ul></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Todo App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        input {
+            padding: 8px;
+            width: 70%;
+        }
+
+        button {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Node.js Todo App</h1>
+
+    <form action="/add" method="POST">
+        <input type="text" name="task" required>
+        <button type="submit">Add</button>
+    </form>
+
+    <ul>
+        <% todos.forEach((todo,index)=>{ %>
+        <li>
+            <%= todo %>
+            <form action="/delete/<%= index %>" method="POST" style="display:inline">
+                <button type="submit">Delete</button>
+            </form>
+        </li>
+        <% }) %>
+    </ul>
+</body>
+</html>

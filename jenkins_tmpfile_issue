@@ -1,0 +1,235 @@
+====================================================
+JENKINS TMP ISSUE TROUBLESHOOTING GUIDE
+====================================================
+
+ISSUE:
+----------------------------------------------------
+Jenkins build failing with errors like:
+
+java.io.IOException: No space left on device
+
+OR
+
+Failed to create temporary file
+
+This happens when the /tmp directory becomes full.
+
+====================================================
+STEP 1: CHECK DISK SPACE
+====================================================
+
+Check overall disk usage:
+
+sudo df -h
+
+Check only /tmp:
+
+df -h /tmp
+
+Example Output:
+
+Filesystem      Size  Used Avail Use%
+/dev/root        20G   20G     0 100%
+
+If Available Space = 0, Jenkins may fail.
+
+====================================================
+STEP 2: CLEAN TEMP FILES
+====================================================
+
+Remove temporary files:
+
+sudo rm -rf /tmp/*
+
+Verify:
+
+df -h /tmp
+
+====================================================
+STEP 3: CLEAN APT CACHE
+====================================================
+
+sudo apt clean
+
+Verify disk space:
+
+df -h
+
+====================================================
+STEP 4: CONFIGURE JENKINS TO USE /var/tmp
+====================================================
+
+Open Jenkins Service Configuration:
+
+sudo systemctl edit jenkins
+
+Add the following:
+
+[Service]
+Environment="JAVA_OPTS=-Djava.io.tmpdir=/var/tmp"
+
+Save and Exit.
+
+Nano Commands:
+
+CTRL + O
+ENTER
+CTRL + X
+
+====================================================
+STEP 5: RELOAD SYSTEMD
+====================================================
+
+sudo systemctl daemon-reload
+
+====================================================
+STEP 6: RESTART JENKINS
+====================================================
+
+sudo systemctl restart jenkins
+
+Check Status:
+
+sudo systemctl status jenkins
+
+Expected:
+
+Active: active (running)
+
+====================================================
+STEP 7: VERIFY CONFIGURATION
+====================================================
+
+sudo systemctl cat jenkins
+
+Expected Output:
+
+[Service]
+Environment="JAVA_OPTS=-Djava.io.tmpdir=/var/tmp"
+
+====================================================
+STEP 8: CHECK JENKINS LOGS
+====================================================
+
+Live Logs:
+
+sudo journalctl -u jenkins -f
+
+Last 100 Logs:
+
+sudo journalctl -u jenkins -n 100
+
+====================================================
+STEP 9: CHECK /var/tmp SPACE
+====================================================
+
+df -h /var/tmp
+
+Example:
+
+Filesystem      Size  Used Avail Use%
+/dev/root        20G   10G   10G 50%
+
+====================================================
+STEP 10: DOCKER CLEANUP
+====================================================
+
+Remove Stopped Containers:
+
+docker container prune -f
+
+Remove Unused Images:
+
+docker image prune -a -f
+
+Remove Unused Volumes:
+
+docker volume prune -f
+
+Complete Docker Cleanup:
+
+docker system prune -a -f
+
+====================================================
+USEFUL JENKINS COMMANDS
+====================================================
+
+Check Jenkins Status:
+
+sudo systemctl status jenkins
+
+Restart Jenkins:
+
+sudo systemctl restart jenkins
+
+Stop Jenkins:
+
+sudo systemctl stop jenkins
+
+Start Jenkins:
+
+sudo systemctl start jenkins
+
+View Service File:
+
+sudo systemctl cat jenkins
+
+====================================================
+COMPLETE FIX COMMANDS
+====================================================
+
+df -h
+
+sudo apt clean
+
+sudo rm -rf /tmp/*
+
+sudo systemctl edit jenkins
+
+Add:
+
+[Service]
+Environment="JAVA_OPTS=-Djava.io.tmpdir=/var/tmp"
+
+Save and Exit
+
+sudo systemctl daemon-reload
+
+sudo systemctl restart jenkins
+
+sudo systemctl status jenkins
+
+sudo systemctl cat jenkins
+
+====================================================
+ROOT CAUSE
+====================================================
+
+/tmp directory becomes full.
+
+Jenkins cannot create temporary files.
+
+Builds fail with:
+
+- No space left on device
+- Failed to create temporary file
+
+====================================================
+PERMANENT SOLUTION
+====================================================
+
+Configure Jenkins to use:
+
+JAVA_OPTS=-Djava.io.tmpdir=/var/tmp
+
+and periodically clean:
+
+- /tmp
+- APT Cache
+- Docker Images
+- Docker Containers
+- Docker Volumes
+
+====================================================
+END OF DOCUMENT
+====================================================
